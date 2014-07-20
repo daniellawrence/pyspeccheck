@@ -74,7 +74,6 @@ class Spec(object):
         else:
             print colors.win(all_ok)
 
-
     def _make_sure(self, x, y=True):
         if x == y:
             return True

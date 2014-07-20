@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 
-from .util import SpecError, colors, Spec
+from .util import Spec
+
 
 class File(Spec):
 
     STATES = [
         "directory", "file",
-        "owned_by", 
+        "owned_by",
     ]
 
     def __init__(self, path):
@@ -16,7 +17,10 @@ class File(Spec):
         self.WIN = "File %s is %%s correctly" % self.path
 
     def get_state(self):
-        import os, stat, pwd, grp
+        import os
+        import stat
+        import pwd
+        import grp
         s = os.stat(self.path)
         self.state = {
             'st_mode': s.st_mode,

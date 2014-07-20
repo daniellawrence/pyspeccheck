@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from .util import SpecError, colors, Spec
+from .util import Spec
 
 
 class Port(Spec):
@@ -53,25 +53,28 @@ class Port(Spec):
     def sb_listening(self, *args):
         if self._make_sure(self.state['state'], "listening"):
             return True
-        return "Port %s is current %s not listening" % (self.portnumber,
-                                                        self.state['state']
+        return "Port %s is current %s not listening" % (
+            self.portnumber,
+            self.state['state']
         )
 
     def sb_closed(self, *args):
         if self._make_sure(self.state['state'], "closed"):
             return True
-        return "Port %s is current %s not closed" % (self.portnumber,
-                                                     self.state['state']
+        return "Port %s is current %s not closed" % (
+            self.portnumber, self.state['state']
         )
 
     def sb_tcp(self, *args):
         if self._make_sure(self.state['proto'], "tcp"):
             return True
-        return "Port %s is using protocol %s not TCP" % (self.portnumber,
-                                                         self.state['proto']
+        return "Port %s is using protocol %s not TCP" % (
+            self.portnumber, self.state['proto']
         )
 
     def sb_bound_to(self, bound_ip):
         if self._make_sure(self.state['bound'], bound_ip):
             return True
-        return "The port is bound to %s not %s" % (self.state['bound'], bound_ip)
+        return "The port is bound to %s not %s" % (
+            self.state['bound'], bound_ip
+        )
