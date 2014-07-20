@@ -59,7 +59,7 @@ class Spec(object):
         return results
 
     def should_be(self, *args):
-        desired_state = args[0]
+        desired_state = ' '.join(args).replace('_', ' ')
         all_ok = self._should_be(*args)
         if all_ok is True:
             print colors.win(self.WIN % (desired_state))

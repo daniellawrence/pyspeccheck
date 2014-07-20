@@ -5,7 +5,8 @@ from .util import SpecError, colors, Spec
 class File(Spec):
 
     STATES = [
-        "directory", "file"
+        "directory", "file",
+        "owned_by", 
     ]
 
     def __init__(self, path):
@@ -42,3 +43,22 @@ class File(Spec):
         if self._make_sure(self.state['file']):
             return True
         return "%s is not a file" % (self.path)
+
+    def sb_owned_by(self, desired_owner):
+        user = None
+        group = None
+        problems = []
+        if ':' in desired_owner:
+            (user, group) = desired_owner.split(':')
+        else:
+            user = desired_owner
+
+        if user and self.state['user'] != user:
+            problems.append("owned %s not %s" % (self.state['user'], user))
+
+        if group and self.state['group'] != group:
+            problems.append("group %s not %s" % (self.state['group'], group))
+
+        if problems:
+            return ' and '.join(problems)
+        return True
