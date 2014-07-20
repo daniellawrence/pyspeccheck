@@ -15,6 +15,3 @@ for IMPORTANT_DIRS in ["/etc/ssh/"]:
     f.should_be("directory")
     f.should_be("owned_by", "root:root")
     f.should_be("owned_by", "root")
-    
-    f.should_be("owned_by", "bob:bob")
-    f.should_be("owned_by", "bob")
