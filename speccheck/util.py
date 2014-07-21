@@ -32,6 +32,7 @@ class colors:
 
 
 class Status(object):
+
     def __init__(self):
         self.ok = []
         self.fail = []
@@ -54,7 +55,18 @@ class Status(object):
         return("OK")
 
     def __str__(self):
-        return "%s" % self.fail + self.ok
+        return "%s" % " ".join(self.fail + self.ok)
+
+    def nagios(self):
+        state = "OK"
+        if len(self.fail) > 0:
+            state = "ERROR"
+        if state == "OK":
+            return "OK: %s/%s checks passed" % (
+                len(self.ok), len(self.ok))
+        else:
+            return "ERROR: %s/%s checks failed" % (
+                len(self.fail), len(self.ok + self.fail))
 
 
 class Spec(object):
@@ -97,22 +109,22 @@ class Spec(object):
         all_ok = self._should_be(*args)
         if all_ok is True:
             msg = self.WIN % desired_state
-            print(colors.win(msg))
+            #print(colors.win(msg))
             self.status.add_ok(msg)
         else:
             self.status.add_fail(all_ok)
-            print(colors.fail(all_ok))
+            #print(colors.fail(all_ok))
 
     def should_not_be(self, *args):
         desired_state = args[0]
         all_ok = self._should_be(*args)
         if all_ok is True:
             msg = self.WIN % desired_state
-            print(colors.fail(msg))
+            #print(colors.fail(msg))
             self.status.add_fail(msg)
         else:
             msg = self.WIN % desired_state
-            print(colors.win(msg))
+            #print(colors.win(msg))
             self.status.add_ok(msg)
 
     def _make_sure(self, x, y=True):
