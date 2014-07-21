@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+global status
+from collections import defaultdict
+
 
 class SpecError(Exception):
     def __init__(self, message, errors):
@@ -28,6 +31,32 @@ class colors:
         return "%s%s%s" % (self.OKGREEN, msg, self.ENDC)
 
 
+class Status(object):
+    def __init__(self):
+        self.ok = []
+        self.fail = []
+
+    def add_fail(self, problem):
+        self.fail.append(problem)
+
+    def add_ok(self, problem):
+        self.ok.append(problem)
+
+    def get_problems(self):
+        return self.fail
+
+    def get_ok(self):
+        return self.ok
+
+    def status(self):
+        if len(self.fail) != 0:
+            return("Fail")
+        return("OK")
+
+    def __str__(self):
+        return "%s" % self.fail + self.ok
+
+
 class Spec(object):
 
     STATES = []
@@ -46,6 +75,11 @@ class Spec(object):
         return self
 
     def _should_be(self, *args):
+        global status
+        if not status:
+            raise Exception("WTF")
+        self.status = status
+
         desired_state = args[0]
         if desired_state not in self.STATES:
             raise Exception("unknown state '%s' should be one of: %s" %
@@ -62,20 +96,29 @@ class Spec(object):
         desired_state = ' '.join(args).replace('_', ' ')
         all_ok = self._should_be(*args)
         if all_ok is True:
-            print colors.win(self.WIN % (desired_state))
+            msg = self.WIN % desired_state
+            print(colors.win(msg))
+            self.status.add_ok(msg)
         else:
-            print colors.fail(all_ok)
+            self.status.add_fail(all_ok)
+            print(colors.fail(all_ok))
 
     def should_not_be(self, *args):
         desired_state = args[0]
         all_ok = self._should_be(*args)
         if all_ok is True:
-            print colors.fail(self.WIN % (desired_state))
+            msg = self.WIN % desired_state
+            print(colors.fail(msg))
+            self.status.add_fail(msg)
         else:
-            print colors.win(all_ok)
+            msg = self.WIN % desired_state
+            print(colors.win(msg))
+            self.status.add_ok(msg)
 
     def _make_sure(self, x, y=True):
         if x == y:
             return True
         else:
             return False
+
+status = Status()
