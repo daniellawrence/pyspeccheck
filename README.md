@@ -35,3 +35,12 @@ It generates
 	File /etc/ssh/ is directory correctly
 	File /etc/ssh/ is owned by root:root correctly
 	File /etc/ssh/ is owned by root correctly
+
+
+Or this
+-------
+
+    ERROR: 3/7 checks failed
+    Port 21 is current closed not listening
+    Port 21 is using protocol None not TCP
+    The port is bound to False not 0.0.0.0
