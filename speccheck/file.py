@@ -14,7 +14,7 @@ class File(Spec):
         self.path = path
         self.state = {}
         self.get_state()
-        self.WIN = "File %s is %%s correctly" % self.path
+        self.WIN = "File %s is %%s" % self.path
 
     def get_state(self):
         import os

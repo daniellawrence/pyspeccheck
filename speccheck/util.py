@@ -68,11 +68,17 @@ class Status(object):
             return "ERROR: %s/%s checks failed" % (
                 len(self.fail), len(self.ok + self.fail))
 
+    def report(self):
+        for ok in self.ok:
+            print colors.win(ok)
+        for fail in self.fail:
+            print colors.fail(fail)
+
 
 class Spec(object):
 
     STATES = []
-    WIN = "Spec is %s correctly"
+    WIN = "Spec is %s"
 
     def __init__(self):
         self.get_state()
@@ -107,24 +113,36 @@ class Spec(object):
     def should_be(self, *args):
         desired_state = ' '.join(args).replace('_', ' ')
         all_ok = self._should_be(*args)
-        if all_ok is True:
-            msg = self.WIN % desired_state
-            #print(colors.win(msg))
-            self.status.add_ok(msg)
+        msg = self.WIN % desired_state
+
+        if isinstance(all_ok, tuple):
+            state = all_ok[0]
+            msg = all_ok[1]
         else:
-            self.status.add_fail(all_ok)
-            #print(colors.fail(all_ok))
+            state = all_ok
+
+        if state is True:
+            self.status.add_ok(msg)
+            return state
+        else:
+            self.status.add_fail(msg)
+            return state
 
     def should_not_be(self, *args):
         desired_state = args[0]
         all_ok = self._should_be(*args)
+        msg = self.WIN % desired_state
+
+        if isinstance(all_ok, tuple):
+            state = all_ok[0]
+            msg = all_ok[1]
+        else:
+            state = all_ok
+
         if all_ok is True:
-            msg = self.WIN % desired_state
-            #print(colors.fail(msg))
             self.status.add_fail(msg)
         else:
-            msg = self.WIN % desired_state
-            #print(colors.win(msg))
+            msg = msg.replace(' is ',' is not ')
             self.status.add_ok(msg)
 
     def _make_sure(self, x, y=True):
