@@ -8,6 +8,7 @@ class File(Spec):
     STATES = [
         "directory", "file",
         "owned_by",
+        "smaller_than", "larger_than"
     ]
 
     def __init__(self, path):
@@ -37,6 +38,26 @@ class File(Spec):
             'full_mode': oct(stat.S_IMODE(s.st_mode)),
             'mode': oct(stat.S_IMODE(s.st_mode))[1:],
         }
+
+    def sb_smaller_than(self, size):
+        size_map = {
+            'k': 1024,
+            'm': 1024*1024,
+            'g': 1024*1024*1024
+        }
+        real_size = self.state['st_size']
+        size_units = size[-1].lower()
+        size_count = int(size[0:-1])
+        expected_size = size_count * size_map[size_units]
+
+        if expected_size > real_size:
+            return True, "File %s is smaller than %s" % (self.path, size)
+        else:
+            return False, "File %s is larger than %s" % (self.path, size)
+
+    def sb_larger_than(self, size):
+        x, msg = self.sb_smaller_than(size)
+        return x is False, msg
 
     def sb_directory(self, *args):
         if self._make_sure(self.state['directory']):

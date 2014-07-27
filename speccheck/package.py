@@ -3,7 +3,7 @@
 from .util import Spec
 
 
-class Pkg(Spec):
+class Package(Spec):
 
     STATES = [
         "installed", "removed", "latest"
@@ -13,7 +13,7 @@ class Pkg(Spec):
         self.name = name
         self.state = {}
         self.get_state()
-        self.WIN = "Pkg %s is %%s" % self.name
+        self.WIN = "Package %s is %%s" % self.name
 
     def get_state(self):
         import os
